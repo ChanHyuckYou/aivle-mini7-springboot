@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Bootstrap demo</title>
+
+</head>
+<body>
+<header class="navbar">
+    <a href="#" class="logo">Emergency</a>
+    <nav class="nav-menu">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="title">
+    <h1>응급상황과 위치를 입력해주세요.</h1>
+    <p>Please enter your emergency situation and location.</p>
+</div>
+<div>
+    <form action="recommend_hospital" enctype="application/x-www-form-urlencoded">
+
+        <div class="inputBox">
+            <input type="text" name="request" required="request" value="교통사고가 났어요 머리에 피가 많이나고 있습니다.">
+            <span>request</span>
+        </div>
+        <div class="inputBox">
+            <input type="text" name="latitude" required="latitude" value="37.538435245262626">
+            <span>latitude</span>
+        </div>
+        <div class="inputBox">
+            <input type="text" name="longitude" required="longitude" value="126.98982802695484">
+            <span>longitude</span>
+        </div>
+        <button class="w-btn w-btn-gra1" type="submit">SUBMIT</button>
+    </form>
+</div>
+
+<footer>
+
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384
+C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
