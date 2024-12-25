@@ -1,10 +1,7 @@
 package com.example.aivlemini7springboot.controller;
 
-import com.example.aivlemini7springboot.dto.LogDto;
-import com.example.aivlemini7springboot.service.LogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,18 +14,17 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final LogService logService;
+//    private final LogService logService;
 
-//     pageable default value
-    @GetMapping("")
-    public ModelAndView index(Pageable pageable) {
+  //     pageable default value
+  @GetMapping("")
+  public ModelAndView index(Pageable pageable) {
 
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("admin/index");
+//        Page<LogDto.ResponseList> logList = logService.getLogList(pageable);
+//    mv.addObject("logList", logList);
 
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("admin/index");
-        Page<LogDto.ResponseList> logList = logService.getLogList(pageable);
-        mv.addObject("logList", logList);
-
-        return mv;
-    }
+    return mv;
+  }
 }

@@ -1,51 +1,293 @@
 <!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./css/style.css">
-    <title>Bootstrap demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emergency Response System</title>
+  <link
+      href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap"
+      rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
 
+    body {
+      min-height: 100vh;
+      background: url('https://ojsfile.ohmynews.com/STD_IMG_FILE/2023/0704/IE003173466_STD.jpg') no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .navbar {
+      overflow: hidden;
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 100px;
+      background: transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background-color: rgba(70, 54, 68, 0.3);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 32px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .nav-menu ul {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      position: relative;
+      font-size: 18px;
+      color: #fff;
+      font-weight: 500;
+      text-decoration: none;
+      margin-left: 40px;
+      display: flex;
+    }
+
+    .nav-menu a::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #fff;
+      transition: .3s;
+    }
+
+    .nav-menu a:hover::before {
+      width: 100%;
+    }
+
+    .title {
+      position: relative;
+      top: 40px;
+      width: 100%;
+      text-align: center;
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 50px;
+    }
+
+    .title p {
+      font-size: 16px;
+      margin-top: 5px;
+      color: #c9c9c9d0;
+    }
+
+    form {
+      position: relative;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: left;
+      margin-top: 300px;
+    }
+
+    .inputBox {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .inputBox input {
+      width: 80%;
+      padding: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      background: #fff;
+      outline: none;
+      color: #ffffff;
+      font-size: 1em;
+      transform: 0.5s;
+      border-radius: 5px;
+      transition: 0.5s;
+    }
+
+    .inputBox span {
+      position: absolute;
+      left: 0;
+      padding: 10px;
+      pointer-events: none;
+      font-size: 1em;
+      color: #7489bc;
+      text-transform: uppercase;
+      transition: 0.5s;
+    }
+
+    .inputBox input:valid ~ span,
+    .inputBox input:focus ~ span {
+      color: #7489bc;
+      transform: translateY(-28px);
+      font-size: 0.65em;
+      padding: 0 10px;
+      background: #fff;
+      letter-spacing: 0.2em;
+      border-radius: 2px;
+    }
+
+    .inputBox input:valid,
+    .inputBox input:focus {
+      border: 1px solid #fff;
+      background: transparent;
+    }
+
+    button.w-btn {
+      padding: 10px 15px;
+      margin-left: 10px;
+      background-color: #007BFF;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button.w-btn:hover {
+      background-color: #0056b3;
+    }
+
+    button.w-btn:active {
+      background-color: #003f7f;
+    }
+
+    .submit-btn {
+      position: relative;
+      border: none;
+      display: inline-block;
+      padding: 15px 30px;
+      border-radius: 15px;
+      font-family: "paybooc-Light", sans-serif;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.25s;
+      width: 150px;
+      margin: 0 auto;
+    }
+
+    .submit-btn:hover {
+      letter-spacing: 2px;
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    .submit-btn-gra1 {
+      background: linear-gradient(-45deg, #33ccff 0%, #ff99cc 100%);
+      color: white;
+    }
+
+    .locate-btn {
+      background: url('https://cdn-icons-png.flaticon.com/512/15329/15329425.png') no-repeat center center;
+      background-size: cover;
+      width: 40px;
+      height: 40px;
+      border: none;
+    }
+  </style>
 </head>
 <body>
 <header class="navbar">
-    <a href="#" class="logo">Emergency</a>
-    <nav class="nav-menu">
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
+  <h3 style="color: white" href="#" the="logo">Emergency</h3>
+  <nav class="nav-menu">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
 </header>
 <div class="title">
-    <h1>응급상황과 위치를 입력해주세요.</h1>
-    <p>Please enter your emergency situation and location.</p>
+  <h1>응급상황과 위치를 입력해주세요.</h1>
+  <p>Please enter your emergency situation and location.</p>
 </div>
 <div>
-    <form action="recommend_hospital" enctype="application/x-www-form-urlencoded">
+  <form id="emergencyForm">
+    <div class="inputBox">
+      <input type="text" name="request" required>
+      <span>Request</span>
+    </div>
 
-        <div class="inputBox">
-            <input type="text" name="request" required="request" value="교통사고가 났어요 머리에 피가 많이나고 있습니다.">
-            <span>request</span>
-        </div>
-        <div class="inputBox">
-            <input type="text" name="latitude" required="latitude" value="37.538435245262626">
-            <span>latitude</span>
-        </div>
-        <div class="inputBox">
-            <input type="text" name="longitude" required="longitude" value="126.98982802695484">
-            <span>longitude</span>
-        </div>
-        <button class="w-btn w-btn-gra1" type="submit">SUBMIT</button>
-    </form>
+    <div class="inputBox">
+      <input type="text" id="addressInput" name="address" required>
+      <span>Address</span>
+      <button class="locate-btn" type="button" onclick="getCurrentLocation()"></button>
+      <button class="w-btn" type="button" onclick="searchAddress()">Search</button>
+    </div>
+
+    <div class="inputBox">
+      <input type="text" name="latitude" id="latitude" required>
+      <span>Latitude</span>
+    </div>
+
+    <div class="inputBox">
+      <input type="text" name="longitude" id="longitude" required>
+      <span>Longitude</span>
+    </div>
+
+    <button class="submit-btn submit-btn-gra1" type="button" onclick="submitForm()">SUBMIT</button>
+  </form>
 </div>
+<footer></footer>
+<script>
+  function searchAddress() {
+    const address = document.getElementById('addressInput').value;
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.length > 0) {
+        document.getElementById('latitude').value = data[0].lat;
+        document.getElementById('longitude').value = data[0].lon;
+        alert('위치 검색 성공!');
+      } else {
+        alert('주소를 찾을 수 없습니다.');
+      }
+    })
+    .catch(() => alert('주소 검색 중 오류 발생!'));
+  }
 
-<footer>
+  function getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        document.getElementById('latitude').value = position.coords.latitude;
+        document.getElementById('longitude').value = position.coords.longitude;
+        alert('현재 위치가 설정되었습니다.');
+      });
+    } else {
+      alert('브라우저가 현재 위치를 지원하지 않습니다.');
+    }
+  }
 
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384
-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  function submitForm() {
+    const form = document.getElementById('emergencyForm');
+    const formData = new FormData(form);
+    const query = new URLSearchParams(formData).toString();
+    window.location.href = `recommend_hospital?${query}`;
+  }
+</script>
 </body>
 </html>

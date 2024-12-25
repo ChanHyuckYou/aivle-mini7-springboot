@@ -1,36 +1,269 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
-    <title>Recommended Hospitals</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency - Recommended Hospital</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .header, .nav-bar {
+      padding: 10px 20px;
+      text-align: center;
+    }
+
+    .header {
+      background: #f8f9fa;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      background-color: #007bff;
+      color: white;
+    }
+
+    .nav-bar a {
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+    }
+
+    #map {
+      width: 100%;
+      height: 400px;
+    }
+
+    .hospital-list {
+      padding: 20px;
+    }
+
+    .hospital {
+      background: #ffffff;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+
+    .icon {
+      width: 16px; /* 텍스트 높이에 맞춘 너비 */
+      height: 16px; /* 텍스트 높이에 맞춘 높이 */
+      vertical-align: middle; /* 텍스트와 수평 정렬 */
+      margin-right: 5px; /* 텍스트와 약간의 간격 */
+    }
+
+    .emergency-class {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-<h1>Recommended Hospitals</h1>
+<div class="nav-bar">
+  <div>Emergency</div>
+  <div><a href="#">About</a> | <a href="#">Admin</a> | <a href="#">Login</a></div>
+</div>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Hospital Name</th>
-        <th>Address</th>
-        <th>Emergency Type</th>
-        <th>Phone 1</th>
-        <th>Phone 3</th>
-        <th>Distance (km)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- 병원 목록 반복 -->
-    <tr th:each="hospital, iterStat : ${hospitalList}">
-        <td th:text="${iterStat.index + 1}"></td>
-        <td th:text="${hospital.hospitalName}"></td>
-        <td th:text="${hospital.address}"></td>
-        <td th:text="${hospital.emergencyMedicalInstitutionType}"></td>
-        <td th:text="${hospital.phoneNumber1}"></td>
-        <td th:text="${hospital.phoneNumber3}"></td>
-        <td th:text="${hospital.distance} + ' km'"></td>
-    </tr>
-    </tbody>
-</table>
+<div class="header">
+  <h1>Recommended Hospital</h1>
+</div>
+
+<div id="map"></div>
+<div id="info">
+  <h2 id="emergency-info">중증도 정보를 불러오는 중...</h2>
+</div>
+<div class="hospital-list">
+  <!-- This will be populated with server data -->
+</div>
+
+<script type="text/javascript"
+        src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=3bnisjgacm"></script>
+<script>
+  // 쿼리 파라미터에서 특정 변수 값을 가져오는 함수
+  function getQueryVariable(variable) {
+    var query = window.location.search.substring(1); // URL의 쿼리 문자열 가져오기
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=');
+      if (decodeURIComponent(pair[0]) === variable) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    console.log('Query variable %s not found', variable);
+    return null;
+  }
+
+  // 쿼리 파라미터에서 값 가져오기
+  var startLat = getQueryVariable('latitude') || 37.504; // 기본값 설정
+  var startLon = getQueryVariable('longitude') || 126.761; // 기본값 설정
+  var request = getQueryVariable('request') || "defaultRequest"; // 기본 요청 값 설정
+
+  var map, startMarker, goalMarker, polyline;
+
+  // 지도 초기화 함수
+  function initMap() {
+    var initialLat = parseFloat(startLat);
+    var initialLon = parseFloat(startLon);
+
+    // 네이버 지도 생성
+    map = new naver.maps.Map('map', {
+      center: new naver.maps.LatLng(initialLat, initialLon),
+      zoom: 14
+    });
+
+    // 현재 위치 마커 설정
+    var currentPos = new naver.maps.LatLng(initialLat, initialLon);
+    startMarker = new naver.maps.Marker({
+      map: map,
+      position: currentPos,
+      icon: {
+        content: '<img src="data:image/png;base64,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"'
+            + '' + ' style="width: 24px; height: 24px;">',
+        anchor: new naver.maps.Point(12, 12)
+      }
+    });
+    map.setCenter(currentPos);
+
+    // 병원 데이터 로드
+    fetchHospitals(request, initialLat, initialLon);
+  }
+
+  // 병원 데이터를 서버에서 가져오는 함수
+  function fetchHospitals(request, startLat, startLon) {
+    fetch(`http://localhost:8000/hospital_by_module?request=${encodeURIComponent(
+        request)}&latitude=${startLat}&longitude=${startLon}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("Received data:", data);
+
+      // 중증도 정보를 DOM에 업데이트 및 행동 분기
+      const emergencyInfo = document.getElementById("emergency-info");
+      const emClass = data.emergency_class;
+
+      // 중증도별 동작 처리
+      if (emClass <= 3) {
+        emergencyInfo.innerHTML = `중증도 <span class="emergency-class">${emClass}</span>등급: 환자를 근처 응급실로 이송해야 합니다.`;
+        displayHospitals(data.recommended_hospitals); // 병원 목록 표시
+      } else if (emClass === 3 || emClass === 4) {
+        emergencyInfo.innerHTML = `중증도 <span class="emergency-class">${emClass}</span>등급: 경미한 응급 상황입니다. 자가 치료가 가능할 수 있습니다.`;
+        setTimeout(() => {
+          window.location.href = 'selfcare.html'; // selfcare 페이지로 이동
+        }, 2000); // 2초 대기 후 이동
+      } else if (emClass === 5 || emClass === 6) {
+        emergencyInfo.innerHTML = `중증도 <span class="emergency-class">${emClass}</span>등급: 비응급 상황으로 확인되었습니다.`;
+        alert('비응급 상황입니다. 초기 페이지로 돌아갑니다.');
+        setTimeout(() => {
+          window.location.href = '/'; // 초기 페이지로 이동
+        }, 2000); // 2초 대기 후 이동
+      }
+    })
+    .catch(error => console.error('Failed to fetch hospitals:', error));
+  }
+
+  // 병원 목록을 화면에 표시하는 함수
+  function displayHospitals(hospitals) {
+    var hospitalListDiv = document.querySelector('.hospital-list');
+    hospitalListDiv.innerHTML = ''; // 초기화
+
+    hospitals.forEach(function (hospital) {
+      var div = document.createElement('div');
+      div.className = 'hospital';
+      div.innerHTML = `
+      <h2>${hospital.name}</h2>
+      <p><img class="icon" src="https://cdn-icons-png.flaticon.com/512/109/109588.png" alt="주소 아이콘"> 주소: ${hospital.address}</p>
+      <p><img class="icon" src="https://cdn-icons-png.flaticon.com/512/94/94915.png" alt="전화 아이콘"> 대표: ${hospital.tel1}</p>
+      <p>     응급실: ${hospital.tel3}</p>
+      <p><img class="icon" src="https://cdn-icons-png.flaticon.com/512/89/89102.png" alt="거리 아이콘"> 거리 ${hospital.distance} | 예상 도착 시간 ${hospital.estimated_arrival_time}</p>
+ `;
+      // 병원을 클릭하면 경로를 계산하여 지도에 표시
+      div.onclick = function () {
+        var goalPos = new naver.maps.LatLng(hospital.latitude, hospital.longitude);
+        calculateRoute(startMarker.getPosition(), goalPos);
+      };
+      hospitalListDiv.appendChild(div);
+    });
+  }
+
+  // 경로를 계산하고 지도를 업데이트하는 함수
+  function calculateRoute(start, goal) {
+    const url = `/api/proxy/directions?start=${start.lng()},${start.lat()}&goal=${goal.lng()},${goal.lat()}`;
+
+    fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("Route Data:", data);
+
+      // 응답 데이터 유효성 검사
+      if (data.code === 0 && data.route && data.route.traoptimal) {
+        updateMapWithRoute(data, goal);
+      } else {
+        throw new Error("Invalid route data structure");
+      }
+    })
+    .catch(error => console.error("Error fetching route:", error));
+  }
+
+  // 경로 데이터를 기반으로 지도를 업데이트하는 함수
+  function updateMapWithRoute(data, goal) {
+    if (data.route && data.route.traoptimal && data.route.traoptimal.length > 0) {
+      // 최적 경로 데이터 가져오기
+      const route = data.route.traoptimal[0];
+      const path = route.path.map(([lng, lat]) => new naver.maps.LatLng(lat, lng));
+
+      // 도착지 마커 설정
+      if (goalMarker) {
+        goalMarker.setMap(null);
+      }
+      goalMarker = new naver.maps.Marker({
+        map: map,
+        position: goal,
+        icon: {
+          content: '<img src="https://cdn-icons-png.flaticon.com/256/6387/6387797.png" style="width: 24px; height: 24px;">',
+          anchor: new naver.maps.Point(12, 12)
+        }
+      });
+
+      // 이전 경로 제거
+      if (polyline) {
+        polyline.setMap(null);
+      }
+      polyline = new naver.maps.Polyline({
+        map: map,
+        path: path,
+        strokeColor: '#5347AA',
+        strokeOpacity: 0.8,
+        strokeWeight: 3
+      });
+
+      // 지도를 경로로 이동
+      map.panTo(goal);
+      console.log("Route updated successfully:", path);
+    } else {
+      console.error("Error: No route data available or invalid data structure", data);
+    }
+  }
+
+  // 초기화 함수 실행
+  initMap();
+</script>
+
 
 </body>
 </html>
